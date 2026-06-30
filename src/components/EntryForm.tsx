@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -9,6 +10,7 @@ interface EntryFormProps {
 }
 
 export function EntryForm({ createEntry }: EntryFormProps) {
+  const router = useRouter()
   const [text, setText] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -28,6 +30,7 @@ export function EntryForm({ createEntry }: EntryFormProps) {
       const result = await createEntry(trimmedText)
       if (result.ok) {
         setText("")
+        router.refresh()
       } else {
         setError(result.error || "An error occurred")
       }
