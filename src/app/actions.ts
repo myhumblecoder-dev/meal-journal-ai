@@ -42,3 +42,11 @@ export async function listEntries(): Promise<Entry[]> {
     take: 20,
   })
 }
+
+export async function listAllEntries(): Promise<Entry[]> {
+  return await db.entry.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+  })
+}
