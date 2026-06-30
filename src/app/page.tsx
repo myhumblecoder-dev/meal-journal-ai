@@ -2,30 +2,18 @@ import { db } from "@/lib/db";
 import { EntryForm } from "@/components/EntryForm";
 import { EntryList } from "@/components/EntryList";
 import Link from "next/link";
-import { revalidatePath } from "next/cache";
+import { createEntry } from "@/app/actions";
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 async function listEntries() {
   return await db.entry.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
   });
 }
 
 export default async function Page() {
   const entries = await listEntries();
-
-  async function createEntryAction(text: string) {
-    try {
-      await db.entry.create({
-        data: { text },
-      });
-      revalidatePath("/");
-      return { ok: true };
-    } catch (err) {
-      return { ok: false, error: err instanceof Error ? err.message : "Failed to create entry" };
-    }
-  }
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black p-8 font-sans">
@@ -40,7 +28,7 @@ export default async function Page() {
 
       <main className="mx-auto max-w-2xl space-y-12">
         <section>
-          <EntryForm createEntry={createEntryAction} />
+          <EntryForm createEntry={createEntry} />
         </section>
 
         <section>
