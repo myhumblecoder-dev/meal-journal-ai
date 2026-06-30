@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db"
 import { entryTextSchema } from '@/lib/validation'
+import type { Entry } from '@prisma/client'
 
 export type ActionResponse = Promise<{ ok: boolean; error?: string }>
 
@@ -31,4 +32,13 @@ export async function createEntry(text: string): ActionResponse {
     const errorMsg = err instanceof Error ? err.message : "Failed to create entry"
     return { ok: false, error: errorMsg }
   }
+}
+
+export async function listEntries(): Promise<Entry[]> {
+  return await db.entry.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+    take: 20,
+  })
 }
