@@ -1,0 +1,23 @@
+# Local smoke-test stack: `docker compose up -d`, then run the app on
+# the host (`pnpm dev`). Only Postgres is containerized; the Next.js app
+# and any local Ollama run on the host. DATABASE_URL (.env) points here.
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: meal_journal_ai
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d meal_journal_ai"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
